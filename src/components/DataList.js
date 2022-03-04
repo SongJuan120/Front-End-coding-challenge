@@ -3,22 +3,21 @@ import { nanoid } from "nanoid";
 import data from "../mock-data.json";
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
-import { Button, Table } from "react-bootstrap";
+import { Button, Table, Form, InputGroup, FormControl } from "react-bootstrap";
+import ImageUploader from "react-images-upload";
 
-const DataList = () => {
+const DataList = (props) => {
   const [contacts, setContacts] = useState(data);
   const [addFormData, setAddFormData] = useState({
-    fullName: "",
-    address: "",
-    phoneNumber: "",
-    email: "",
+    description: "",
+    title: "",
+    image: "", 
   });
 
   const [editFormData, setEditFormData] = useState({
-    fullName: "",
-    address: "",
-    phoneNumber: "",
-    email: "",
+    description: "",
+    title: "",
+    image: "",    
   });
 
   const [editContactId, setEditContactId] = useState(null);
@@ -52,10 +51,9 @@ const DataList = () => {
 
     const newContact = {
       id: nanoid(),
-      fullName: addFormData.fullName,
-      address: addFormData.address,
-      phoneNumber: addFormData.phoneNumber,
-      email: addFormData.email,
+      description: addFormData.description,
+      title: addFormData.title,
+      image: addFormData.image,      
     };
 
     const newContacts = [...contacts, newContact];
@@ -67,10 +65,9 @@ const DataList = () => {
 
     const editedContact = {
       id: editContactId,
-      fullName: editFormData.fullName,
-      address: editFormData.address,
-      phoneNumber: editFormData.phoneNumber,
-      email: editFormData.email,
+      description: editFormData.description,
+      title: editFormData.title,
+      image: editFormData.image,      
     };
 
     const newContacts = [...contacts];
@@ -88,10 +85,9 @@ const DataList = () => {
     setEditContactId(contact.id);
 
     const formValues = {
-      fullName: contact.fullName,
-      address: contact.address,
-      phoneNumber: contact.phoneNumber,
-      email: contact.email,
+      description: contact.description,
+      title: contact.title,
+      image: contact.image,      
     };
 
     setEditFormData(formValues);
@@ -111,16 +107,22 @@ const DataList = () => {
     setContacts(newContacts);
   };
 
+  const [pictures, setPictures] = useState([]);
+
+  const onDrop = picture => {
+    setPictures([...pictures, picture]);
+  };
+
   return (
     <div className="app-container">
+      
       <form onSubmit={handleEditFormSubmit}>
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Address</th>
-              <th>Phone Number</th>
-              <th>Email</th>
+              <th>Description</th>
+              <th>Title</th>
+              <th>Image</th>              
               <th>Actions</th>
             </tr>
           </thead>
@@ -145,39 +147,38 @@ const DataList = () => {
           </tbody>
         </Table>
       </form>
-
       <h2>Add a Contact</h2>
-      <form onSubmit={handleAddFormSubmit}>
-        <input
-          type="text"
-          name="fullName"
-          required="required"
-          placeholder="Enter a name..."
-          onChange={handleAddFormChange}
+      <ImageUploader
+          {...props}
+          withIcon={true}
+          onChange={onDrop}
+          imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+          maxFileSize={5242880}
         />
-        <input
-          type="text"
-          name="address"
-          required="required"
-          placeholder="Enter an addres..."
-          onChange={handleAddFormChange}
-        />
-        <input
-          type="text"
-          name="phoneNumber"
-          required="required"
-          placeholder="Enter a phone number..."
-          onChange={handleAddFormChange}
-        />
-        <input
-          type="email"
-          name="email"
-          required="required"
-          placeholder="Enter an email..."
-          onChange={handleAddFormChange}
-        />
-        <Button type="submit">Add</Button>
-      </form>
+      <Form className="row" onSubmit={handleAddFormSubmit}>
+        <InputGroup className="col">      
+          <FormControl
+            type="text"
+            name="description"
+            required="required"
+            placeholder="Enter a Description..."
+            onChange={handleAddFormChange}
+          />
+        </InputGroup>
+        <InputGroup className="col">      
+          <FormControl
+            type="text"
+            name="title"
+            required="required"
+            placeholder="Enter a Title..."
+            onChange={handleAddFormChange}
+          />
+        </InputGroup>
+        
+        <Button className="col" variant="primary" type="submit">Add Product</Button>
+      </Form>
+      
+      
     </div>
   );
 };

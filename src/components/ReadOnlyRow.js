@@ -1,22 +1,23 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 
 const ReadOnlyRow = ({ contact, handleEditClick, handleDeleteClick }) => {
   return (
     <tr>
-      <td>{contact.fullName}</td>
-      <td>{contact.address}</td>
-      <td>{contact.phoneNumber}</td>
-      <td>{contact.email}</td>
+      <td>{contact.description}</td>
+      <td>{contact.title}</td>
+      <td><img src={contact.image} style={{width : "50px"}}></img></td>
+      
       <td>
-        <button
-          type="button"
+        <Button style={{marginRight: "10px"}}
+          variant="warning"
           onClick={(event) => handleEditClick(event, contact)}
         >
           Edit
-        </button>
-        <button type="button" onClick={() => handleDeleteClick(contact.id)}>
+        </Button>
+        <Button variant="danger" onClick={() => handleDeleteClick(contact.id)}>
           Delete
-        </button>
+        </Button>
       </td>
     </tr>
   );

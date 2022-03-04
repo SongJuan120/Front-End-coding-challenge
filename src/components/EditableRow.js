@@ -1,57 +1,59 @@
-import React from "react";
+import React, {useState} from "react";
+import { Button } from "react-bootstrap";
+import { InputGroup, FormControl } from "react-bootstrap";
+import ImageUploader from "react-images-upload";
 
 const EditableRow = ({
   editFormData,
   handleEditFormChange,
   handleCancelClick,
+  props
 }) => {
+
+  const [pictures, setPictures] = useState([]);
+
+  const onDrop = picture => {
+    setPictures([...pictures, picture]);
+  };
   return (
     <tr>
       <td>
-        <input
-          type="text"
-          required="required"
-          placeholder="Enter a name..."
-          name="fullName"
-          value={editFormData.fullName}
-          onChange={handleEditFormChange}
-        ></input>
+      <InputGroup>      
+          <FormControl
+            type="text"
+            name="description"
+            required="required"
+            placeholder="Enter a Description..."
+            onChange={handleEditFormChange}
+          />
+        </InputGroup>        
       </td>
       <td>
-        <input
-          type="text"
-          required="required"
-          placeholder="Enter an address..."
-          name="address"
-          value={editFormData.address}
-          onChange={handleEditFormChange}
-        ></input>
+      <InputGroup>      
+          <FormControl
+            type="text"
+            name="title"
+            required="required"
+            placeholder="Enter a title..."
+            onChange={handleEditFormChange}
+          />
+        </InputGroup>
       </td>
       <td>
-        <input
-          type="text"
-          required="required"
-          placeholder="Enter a phone number..."
-          name="phoneNumber"
-          value={editFormData.phoneNumber}
-          onChange={handleEditFormChange}
-        ></input>
+        <ImageUploader
+          {...props}
+          withIcon={true}
+          onChange={onDrop}
+          imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+          maxFileSize={5242880}
+        />
       </td>
+      
       <td>
-        <input
-          type="email"
-          required="required"
-          placeholder="Enter an email..."
-          name="email"
-          value={editFormData.email}
-          onChange={handleEditFormChange}
-        ></input>
-      </td>
-      <td>
-        <button type="submit">Save</button>
-        <button type="button" onClick={handleCancelClick}>
+        <Button variant="success">Save</Button>
+        <Button variant="danger" onClick={handleCancelClick}>
           Cancel
-        </button>
+        </Button>
       </td>
     </tr>
   );
