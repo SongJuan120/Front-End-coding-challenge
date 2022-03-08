@@ -1,13 +1,15 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { nanoid } from "nanoid";
-import data from "../mock-data.json";
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
 import { Button, Table, Form, InputGroup, FormControl } from "react-bootstrap";
 import ImageUploader from "react-images-upload";
+import { database } from '../firebase';
+import firebase from "firebase";
 
 const DataList = (props) => {
-  const [contacts, setContacts] = useState(data);
+  
+  const [contacts, setContacts] = useState([]);
   const [addFormData, setAddFormData] = useState({
     description: "",
     title: "",
@@ -22,6 +24,22 @@ const DataList = (props) => {
 
   const [editContactId, setEditContactId] = useState(null);
 
+  useEffect(() => {
+    let tbArr = [];
+    database.ref("products").on('value', snapshot => {
+      snapshot.forEach(el => {
+        const temp = {
+          description: el.val().description,
+          title: el.val().title,
+          image: el.val().image,
+          id: el.key
+        }
+        tbArr.push(temp);       
+      }); 
+      setContacts(tbArr);
+    });
+  }, []);
+
   const handleAddFormChange = (event) => {
     event.preventDefault();
 
@@ -30,12 +48,11 @@ const DataList = (props) => {
 
     const newFormData = { ...addFormData };
     newFormData[fieldName] = fieldValue;
-
     setAddFormData(newFormData);
   };
 
   const handleEditFormChange = (event) => {
-    event.preventDefault();
+    event.preventDefault();   
 
     const fieldName = event.target.getAttribute("name");
     const fieldValue = event.target.value;

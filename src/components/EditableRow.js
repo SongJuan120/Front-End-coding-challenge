@@ -1,7 +1,9 @@
+
 import React, {useState} from "react";
 import { Button } from "react-bootstrap";
 import { InputGroup, FormControl } from "react-bootstrap";
 import ImageUploader from "react-images-upload";
+
 
 const EditableRow = ({
   editFormData,
@@ -24,6 +26,7 @@ const EditableRow = ({
             name="description"
             required="required"
             placeholder="Enter a Description..."
+            value={editFormData.description}
             onChange={handleEditFormChange}
           />
         </InputGroup>        
@@ -35,6 +38,7 @@ const EditableRow = ({
             name="title"
             required="required"
             placeholder="Enter a title..."
+            value={editFormData.title}
             onChange={handleEditFormChange}
           />
         </InputGroup>
@@ -42,6 +46,7 @@ const EditableRow = ({
       <td>
         <ImageUploader
           {...props}
+          value={editFormData.image}
           withIcon={true}
           onChange={onDrop}
           imgExtension={[".jpg", ".gif", ".png", ".gif"]}
@@ -50,7 +55,7 @@ const EditableRow = ({
       </td>
       
       <td>
-        <Button variant="success">Save</Button>
+        <Button variant="success" type="submit">Save</Button>
         <Button variant="danger" onClick={handleCancelClick}>
           Cancel
         </Button>
