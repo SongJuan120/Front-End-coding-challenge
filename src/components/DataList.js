@@ -1,15 +1,16 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, } from "react";
 import { nanoid } from "nanoid";
 import ReadOnlyRow from "./ReadOnlyRow";
 import EditableRow from "./EditableRow";
 import { Button, Table, Form, InputGroup, FormControl } from "react-bootstrap";
-import ImageUploader from "react-images-upload";
+// import ImageUploader from "react-images-upload";
 import { database } from '../firebase';
-import firebase from "firebase";
+import { storage } from "firebase";
+
 
 const DataList = (props) => {
   
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState([]);  
   const [addFormData, setAddFormData] = useState({
     description: "",
     title: "",
@@ -34,13 +35,15 @@ const DataList = (props) => {
           image: el.val().image,
           id: el.key
         }
+        console.log ('===========>')
         tbArr.push(temp);       
       }); 
       setContacts(tbArr);
     });
   }, []);
 
-  const handleAddFormChange = (event) => {
+  
+   const handleAddFormChange = (event) => {
     event.preventDefault();
 
     const fieldName = event.target.getAttribute("name");
@@ -63,18 +66,42 @@ const DataList = (props) => {
     setEditFormData(newFormData);
   };
 
+  
   const handleAddFormSubmit = (event) => {
     event.preventDefault();
+    database.ref(`products/${nanoid()}`).set({
+      description : addFormData.description,
+      title : addFormData.title,
+      image : addFormData.image,
+    }).catch(alert);
+    
+    const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    uploadTask.on(
+      "state_changed",
+      snapshot => {},
+      error => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref("images")
+          .child(image.name)
+          .getDownloadURL()
+          .then(url => {
+            console.log(url);
+          })
+      }
+    )
+    // const newContact = {
+    //   id: nanoid(),
+    //   description: addFormData.description,
+    //   title: addFormData.title,
+    //   image: addFormData.image,      
+    // };
 
-    const newContact = {
-      id: nanoid(),
-      description: addFormData.description,
-      title: addFormData.title,
-      image: addFormData.image,      
-    };
-
-    const newContacts = [...contacts, newContact];
-    setContacts(newContacts);
+    // const newContacts = [...contacts, newContact];
+    // setContacts(newContacts);
+    
   };
 
   const handleEditFormSubmit = (event) => {
@@ -124,14 +151,22 @@ const DataList = (props) => {
     setContacts(newContacts);
   };
 
-  const [pictures, setPictures] = useState([]);
+  // const [pictures, setPictures] = useState([]);
 
-  const onDrop = picture => {
-    setPictures([...pictures, picture]);
-  };
+  // const onDrop = picture => {
+  //   setPictures([...pictures, picture]);
+  // };
 
-  return (
-    <div className="app-container">
+  const [image, seImage] = useState(null);
+  const handleChange = e => {
+    if (e.target.files[0]) {
+        seImage(e.target.files[0]);
+    }
+  }
+
+  console.log("image: ", image);
+   return (
+    <div className="app-container">    
       
       <form onSubmit={handleEditFormSubmit}>
         <Table striped bordered hover>
@@ -157,6 +192,7 @@ const DataList = (props) => {
                     contact={contact}
                     handleEditClick={handleEditClick}
                     handleDeleteClick={handleDeleteClick}
+                    handleAddFormSubmit={handleAddFormSubmit}
                   />
                 )}
               </Fragment>
@@ -165,14 +201,15 @@ const DataList = (props) => {
         </Table>
       </form>
       <h2>Add a Contact</h2>
-      <ImageUploader
+      
+      {/* <ImageUploader
           {...props}
           withIcon={true}
           onChange={onDrop}
           imgExtension={[".jpg", ".gif", ".png", ".gif"]}
           maxFileSize={5242880}
-        />
-      <Form className="row" onSubmit={handleAddFormSubmit}>
+        /> */}
+      <Form className="row" onSubmit={handleAddFormSubmit}>        
         <InputGroup className="col">      
           <FormControl
             type="text"
@@ -191,7 +228,9 @@ const DataList = (props) => {
             onChange={handleAddFormChange}
           />
         </InputGroup>
-        
+        <InputGroup className="col">          
+          <input type="file" onChange={handleChange} />                
+        </InputGroup>       
         <Button className="col" variant="primary" type="submit">Add Product</Button>
       </Form>
       

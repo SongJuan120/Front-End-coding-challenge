@@ -6,7 +6,7 @@ const ReadOnlyRow = ({ contact, handleEditClick, handleDeleteClick }) => {
     <tr>
       <td>{contact.description}</td>
       <td>{contact.title}</td>
-      <td><img src={contact.image} style={{width : "50px"}}></img></td>
+      <td><img src={contact.image} alt={contact.image} style={{width : "50px"}}></img></td>
       
       <td>
         <Button style={{marginRight: "10px"}}

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Button } from "react-bootstrap"
 import Products from "./Products"
 import { useAuth } from "../contexts/AuthContext"
-import { Link, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 export default function Dashboard() {
   const [setError] = useState("")
@@ -24,11 +24,11 @@ export default function Dashboard() {
     <>
     <div className="d-flex flex-column w-100">
       <div className="d-flex flex-row justify-content-end" style={{marginBottom : "20px"}}>
-        <Button variant="danger" onClick={handleLogout}>
+        <Button variant="danger" type="submit" onClick={handleLogout}>
           Log Out
         </Button> 
       </div>   
-      <Products></Products>
+      <Products></Products>      
     </div> 
       
          

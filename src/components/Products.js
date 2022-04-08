@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import DataList from "./DataList";
-import { Button, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import Searchbar from "./Searchbar";
 
 function Products() {  
@@ -8,7 +8,7 @@ function Products() {
   return (
     <Container>
       <Searchbar />           
-      <DataList />      
+      <DataList />    
     </Container>
   )
 }
